@@ -7,6 +7,7 @@ const navItems = [
   { label: "홈", path: "/" },
   { label: "회사 소개", path: "/about" },
   { label: "포트폴리오", path: "/portfolio" },
+  { label: "문의", path: "/contact" },
 ];
 
 const Header = () => {
@@ -17,7 +18,7 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
       <div className="container flex items-center justify-between h-16 md:h-20">
         <Link to="/" className="font-display text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-          DAIN<span className="text-gradient-gold">GROUP</span>
+          DINE<span className="text-gradient-gold">GROUP</span>
         </Link>
 
         {/* Desktop Nav */}
@@ -34,7 +35,7 @@ const Header = () => {
             </Link>
           ))}
           <Button asChild size="sm" className="bg-accent text-accent-foreground hover:bg-accent/90 rounded-full px-6">
-            <Link to="/portfolio">문의하기</Link>
+            <Link to="/contact">상담 문의</Link>
           </Button>
         </nav>
 
@@ -58,7 +59,7 @@ const Header = () => {
             </Link>
           ))}
           <Button asChild size="sm" className="w-full bg-accent text-accent-foreground rounded-full">
-            <Link to="/portfolio" onClick={() => setMobileOpen(false)}>문의하기</Link>
+            <Link to="/contact" onClick={() => setMobileOpen(false)}>상담 문의</Link>
           </Button>
         </nav>
       )}
