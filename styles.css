@@ -238,7 +238,7 @@ input { font-family: inherit; }
   margin: 0 0 0 6px;
 }
 .leaflet-container .leaflet-control-attribution a { color: #8C857C; }
-.leaflet-bottom.leaflet-left { bottom: 58px; }
+.leaflet-bottom.leaflet-left { bottom: 74px; z-index: 450; }
 .leaflet-container { font-family: inherit; }
 
 /* ---------- leaflet pins ---------- */
@@ -281,12 +281,12 @@ input { font-family: inherit; }
 .clusterPin {
   transform: translate(-50%, -50%);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-width: 42px; height: 42px; padding: 0 8px;
-  border-radius: 21px;
+  min-width: 38px; height: 38px; padding: 0 7px;
+  border-radius: 19px;
   background: rgba(255,255,255,.97);
   color: var(--ink);
-  font-size: 14px; font-weight: 900; letter-spacing: -.5px;
-  box-shadow: 0 4px 12px rgba(48,32,12,.22), 0 0 0 2px var(--amber) inset;
+  font-size: 13.5px; font-weight: 900; letter-spacing: -.4px;
+  box-shadow: 0 4px 12px rgba(48,32,12,.20), 0 0 0 2px rgba(255,106,19,.85) inset;
   line-height: 1.05;
 }
 .clusterPin small { font-size: 8px; font-weight: 700; color: var(--ink-3); letter-spacing: 0; }

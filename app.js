@@ -216,7 +216,7 @@
     if (!map) return;
     markersLayer.clearLayers();
     var z = map.getZoom();
-    var radius = z <= 12 ? 118 : z <= 13 ? 100 : z <= 14 ? 84 : z <= 15 ? 64 : z <= 16 ? 44 : 34;
+    var radius = z <= 12 ? 110 : z <= 13 ? 96 : z <= 14 ? 80 : z <= 15 ? 62 : z <= 16 ? 46 : 34;
     var pts = S.view.map(function (s) {
       return { s: s, p: map.latLngToLayerPoint(L.latLng(s.lat, s.lng)) };
     });
@@ -243,7 +243,7 @@
         var n = c.items.length;
         var openCnt = c.items.filter(function (i) { return i.s.st.code === 'open'; }).length;
         var html = '<div class="clusterPin' + (openCnt ? ' clusterPin--open' : '') + '">' + n +
-          '<small>' + (openCnt ? '가능 ' + openCnt : '곳') + '</small></div>';
+          '<small>' + (openCnt === n ? '모두 가능' : openCnt ? openCnt + '곳 가능' : '곳') + '</small></div>';
         var mk = L.marker(ll, {
           icon: L.divIcon({ className: 'pinIco', html: html, iconSize: [0, 0] }),
           zIndexOffset: 100 + n
@@ -259,7 +259,7 @@
       var s = c.items[0].s;
       var sel = s.id === S.selectedId;
       var icon;
-      if (z >= 17) {
+      if (z >= 16) {
         var terr = s.terrace === 'O' ? '<span class="pinTerr">▢</span>' : '';
         icon = '<div class="pin ' + pinClass(s.st.code) + (sel ? ' pin--sel isSel' : '') + '">' +
           '<span class="dot"></span><span class="pinTxt">' + esc(shortLabel(s)) + '</span>' + terr + '</div>';
