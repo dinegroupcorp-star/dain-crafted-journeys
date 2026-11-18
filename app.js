@@ -354,16 +354,30 @@
     });
   }
 
-  function refresh() {
+  function refresh(opts) {
     refreshStatuses();
     applyFilters();
     renderPins();
     updateCounts();
     if (S.listOpen) renderList();
     if (S.selectedId) {
-      var s = S.stores.find(function (x) { return x.id === S.selectedId; });
-      if (s) renderSheet(s);
+      var sel = S.stores.find(function (x) { return x.id === S.selectedId; });
+      if (sel) renderSheet(sel);
     }
+    if (opts && opts.autofit) autofitResults();
+  }
+
+  // 필터 결과가 지금 화면에 하나도 없으면 결과 전체가 보이도록 이동
+  function autofitResults() {
+    if (!map || !S.view.length) return;
+    var b = map.getBounds();
+    var onScreen = S.view.some(function (s) { return b.contains([s.lat, s.lng]); });
+    if (onScreen) return;
+    var lb = L.latLngBounds(S.view.map(function (s) { return [s.lat, s.lng]; }));
+    map.flyToBounds(lb, {
+      paddingTopLeft: [26, 255], paddingBottomRight: [26, 140],
+      maxZoom: 15, duration: .55
+    });
   }
 
   /* ---------------- bottom sheet ---------------- */
@@ -661,8 +675,8 @@
       b.onclick = function () {
         S.area = b.getAttribute('data-area');
         syncChips();
-        refresh();
         if (S.area !== 'all') jumpTo(S.area);
+        refresh({ autofit: S.area === 'all' });
       };
     });
     document.querySelectorAll('#filterChips .chip').forEach(function (b) {
@@ -671,19 +685,19 @@
         if (f) S.filters[f] = !S.filters[f];
         if (d) S.drink = S.drink === d ? null : d;
         syncChips();
-        refresh();
+        refresh({ autofit: true });
       };
     });
     var q = document.getElementById('searchInput');
     q.oninput = function () {
       S.q = q.value.trim();
       document.getElementById('clearSearch').hidden = !S.q;
-      refresh();
+      refresh({ autofit: true });
       if (S.listOpen) renderList();
     };
     q.onkeydown = function (e) { if (e.key === 'Enter') q.blur(); };
     document.getElementById('clearSearch').onclick = function () {
-      q.value = ''; S.q = ''; document.getElementById('clearSearch').hidden = true; refresh();
+      q.value = ''; S.q = ''; document.getElementById('clearSearch').hidden = true; refresh({ autofit: true });
     };
     document.getElementById('viewToggle').onclick = function () {
       if (S.listOpen) closeList(); else openList();
