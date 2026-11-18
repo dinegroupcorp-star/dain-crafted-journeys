@@ -95,10 +95,19 @@
   function dayBreak(store, day) {
     return (day === 0 || day === 6) ? store.breakWeekend : store.breakWeekday;
   }
+  function closedDaysOf(store) {
+    var a = parseHours(store.hoursWeekday).closed;
+    var b = parseHours(store.hoursWeekend).closed;
+    var out = {};
+    for (var k in a) out[k] = true;
+    for (var k2 in b) out[k2] = true;
+    return out;
+  }
   function statusAt(store, date) {
     var day = date.getDay(), dn = DAY[day];
     var h = parseHours(dayHours(store, day));
-    if (h.closed[dn]) {
+    var closed = closedDaysOf(store);
+    if (closed[dn]) {
       return { code: 'dayoff', label: '휴무', detail: dn + '요일 정기휴무' };
     }
     if (h.open == null) {
@@ -756,9 +765,19 @@
     });
   }
 
+  function bootFromFallback(err) {
+    if (window.OWHOO2_DATA) { boot(window.OWHOO2_DATA); return; }
+    document.getElementById('mapWrap').innerHTML =
+      '<div class="loadingState" style="padding-top:120px"><div class="big">😵</div>' +
+      '<p>매장 데이터를 불러오지 못했어요</p><span>' + esc(err && err.message ? err.message : '') + '</span></div>';
+  }
   fetch('data/stores.json', { cache: 'no-cache' })
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(boot)
+    .catch(function (err) {
+      bootFromFallback(err);
+      return;
+    })
     .catch(function (err) {
       document.getElementById('mapWrap').innerHTML =
         '<div class="loadingState" style="padding-top:120px"><div class="big">😵</div>' +
