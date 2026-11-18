@@ -605,8 +605,8 @@
     var b = areaBounds(area);
     if (!b) return;
     map.flyToBounds(b, {
-      paddingTopLeft: [26, 250], paddingBottomRight: [26, 130],
-      maxZoom: area === 'all' ? 14 : 16, duration: .6
+      paddingTopLeft: [26, 262], paddingBottomRight: [26, 150],
+      maxZoom: area === 'all' ? 13 : 16, duration: .6
     });
   }
   function locate() {
@@ -756,15 +756,15 @@
     syncChips();
     moveThumb();
     refresh();
-    map.fitBounds(areaBounds('all'), {
-      paddingTopLeft: [20, 250], paddingBottomRight: [20, 130], maxZoom: 13
+    map.fitBounds(areaBounds('성수'), {
+      paddingTopLeft: [26, 262], paddingBottomRight: [26, 150], maxZoom: 16
     });
     window.__owhoo2 = { map: map, S: S, refresh: refresh, setMode: setMode, openSheet: openSheet, jumpTo: jumpTo };
     // iframe/모바일에서 컨테이너 크기가 늦게 잡히는 경우를 보정
     requestAnimationFrame(function () {
       map.invalidateSize();
-      map.fitBounds(areaBounds('all'), {
-        paddingTopLeft: [20, 250], paddingBottomRight: [20, 130], maxZoom: 13
+      map.fitBounds(areaBounds('성수'), {
+        paddingTopLeft: [26, 262], paddingBottomRight: [26, 150], maxZoom: 16
       });
     });
     setTimeout(function () { renderPins(); }, 60);
@@ -774,7 +774,7 @@
       S.area = area; syncChips(); refresh(); jumpTo(area);
     }
     setTimeout(function () {
-      toast('핀을 누르면 낮술 정보가 열려요 · 숫자를 누르면 그 권역으로 확대', 3200);
+      toast('성수 35곳부터 보여드려요 · 상단 칩이나 오른쪽 버튼으로 권역 이동', 3400);
     }, 900);
   }
 

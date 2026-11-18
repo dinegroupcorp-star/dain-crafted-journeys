@@ -228,6 +228,19 @@ input { font-family: inherit; }
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+/* ---------- leaflet controls ---------- */
+.leaflet-container .leaflet-control-attribution {
+  background: rgba(255,255,255,.78);
+  color: #8C857C;
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 6px 6px 0 0;
+  margin: 0 0 0 6px;
+}
+.leaflet-container .leaflet-control-attribution a { color: #8C857C; }
+.leaflet-bottom.leaflet-left { bottom: 58px; }
+.leaflet-container { font-family: inherit; }
+
 /* ---------- leaflet pins ---------- */
 .pinIco { background: none; border: 0; }
 .pin {
