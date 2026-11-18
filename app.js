@@ -259,7 +259,7 @@
       var s = c.items[0].s;
       var sel = s.id === S.selectedId;
       var icon;
-      if (z >= 17) {
+      if (z >= 16) {
         var terr = s.terrace === 'O' ? '<span class="pinTerr">▢</span>' : '';
         icon = '<div class="pin ' + pinClass(s.st.code) + (sel ? ' pin--sel isSel' : '') + '">' +
           '<span class="dot"></span><span class="pinTxt">' + esc(shortLabel(s)) + '</span>' + terr + '</div>';
