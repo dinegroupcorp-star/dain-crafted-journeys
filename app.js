@@ -308,7 +308,7 @@
     }
     var html = S.view.map(function (s) {
       var st = s.st;
-      var tags = '<span class="tag tag--open">' + esc(st.label) + '</span>';
+      var tags = '';
       (s.drinks || []).slice(0, 2).forEach(function (d) { tags += '<span class="tag">' + esc(d) + '</span>'; });
       if (s.terrace === 'O') tags += '<span class="tag tag--terr">테라스</span>';
       else if (s.terrace === '△') tags += '<span class="tag">야외△</span>';
@@ -407,7 +407,8 @@
       '<div class="sheetTop"><div>' +
       '<div class="sheetName">' + esc(s.name) + '</div>' +
       '<div class="sheetMeta"><span class="metaChip">' + esc(s.area) + '</span><span>' + esc(s.category) + '</span>' +
-      ((s.drinks || []).length ? '<span>·</span><span>' + esc(s.drinks.slice(0, 3).join(' / ')) + '</span>' : '') +
+      ((s.drinks || []).length && s.category.indexOf(s.drinks[0]) < 0
+        ? '<span>·</span><span>' + esc(s.drinks.slice(0, 3).join(' / ')) + '</span>' : '') +
       '</div></div>' +
       '<button class="sheetClose" id="sheetClose" aria-label="닫기">✕</button></div>' +
 
@@ -600,13 +601,21 @@
     if (!pts.length) return null;
     return L.latLngBounds(pts.map(function (s) { return [s.lat, s.lng]; }));
   }
+  var AREA_ANCHOR = {
+    '성수': [37.5448, 127.0528],
+    '을지로': [37.5706, 126.9905],
+    '마포': [37.5524, 126.9193]
+  };
   function jumpTo(area) {
-    var b = areaBounds(area);
-    if (!b) return;
-    map.flyToBounds(b, {
-      paddingTopLeft: [26, 262], paddingBottomRight: [26, 150],
-      maxZoom: area === 'all' ? 13 : 16, duration: .6
-    });
+    if (area === 'all' || !AREA_ANCHOR[area]) {
+      var b = areaBounds('all');
+      if (!b) return;
+      map.flyToBounds(b, { paddingTopLeft: [26, 255], paddingBottomRight: [26, 140], maxZoom: 12, duration: .6 });
+      return;
+    }
+    var a = AREA_ANCHOR[area];
+    // 화면 위쪽 헤더에 가리지 않도록 중심을 살짝 북쪽으로
+    map.flyTo([a[0] + 0.0017, a[1]], 15, { duration: .55 });
   }
   function locate() {
     if (!navigator.geolocation) { toast('이 브라우저에서는 위치를 쓸 수 없어요.'); return; }

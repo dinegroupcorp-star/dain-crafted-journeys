@@ -314,7 +314,7 @@ input { font-family: inherit; }
 .sheet.open { transform: translateY(0); }
 .sheetHandleWrap { padding: 8px 0 4px; display: flex; justify-content: center; flex: none; cursor: grab; }
 .sheetHandle { width: 40px; height: 4px; border-radius: 2px; background: #E3DACD; }
-.sheetBody { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 18px calc(18px + var(--safe-bottom)); touch-action: pan-y; }
+.sheetBody { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 18px calc(88px + var(--safe-bottom)); touch-action: pan-y; }
 
 .sheetTop { display: flex; align-items: flex-start; gap: 10px; }
 .sheetName { font-size: 20px; font-weight: 900; letter-spacing: -.6px; line-height: 1.25; }
@@ -342,6 +342,7 @@ input { font-family: inherit; }
 .infoKey { width: 64px; flex: none; color: var(--ink-3); font-weight: 700; font-size: 11.5px; padding-top: 1px; }
 .infoVal { flex: 1; color: var(--ink); font-weight: 600; line-height: 1.45; }
 .infoVal .muted { color: var(--ink-3); font-weight: 600; }
+.infoVal a { color: var(--amber-deep); font-weight: 700; text-decoration: none; border-bottom: 1px solid rgba(225,78,0,.28); }
 .infoVal .warn { color: #C77A00; font-weight: 700; }
 .infoVal .ok { color: var(--green); font-weight: 700; }
 
@@ -451,6 +452,7 @@ input { font-family: inherit; }
   width: 100%; max-width: 340px; max-height: 84dvh; overflow-y: auto;
   background: var(--card); border-radius: 22px;
   box-shadow: var(--shadow-l);
+  overflow-x: hidden; overflow-y: auto;
   transform: scale(.96); transition: transform .22s cubic-bezier(.3,.9,.3,1);
 }
 .modal.open .modalCard { transform: scale(1); }
