@@ -243,7 +243,7 @@
         var n = c.items.length;
         var openCnt = c.items.filter(function (i) { return i.s.st.code === 'open'; }).length;
         var html = '<div class="clusterPin' + (openCnt ? ' clusterPin--open' : '') + '">' + n +
-          '<small>' + (openCnt === n ? '모두 가능' : openCnt ? openCnt + '곳 가능' : '곳') + '</small></div>';
+          '<small>' + (openCnt === n ? '모두 가능' : openCnt ? '일부 가능' : '영업 전·종료') + '</small></div>';
         var mk = L.marker(ll, {
           icon: L.divIcon({ className: 'pinIco', html: html, iconSize: [0, 0] }),
           zIndexOffset: 100 + n
