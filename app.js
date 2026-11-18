@@ -354,7 +354,7 @@
     });
   }
 
-  function refresh(opts) {
+  function refresh() {
     refreshStatuses();
     applyFilters();
     renderPins();
@@ -364,21 +364,8 @@
       var sel = S.stores.find(function (x) { return x.id === S.selectedId; });
       if (sel) renderSheet(sel);
     }
-    if (opts && opts.autofit) autofitResults();
   }
 
-  // 필터 결과가 지금 화면에 하나도 없으면 결과 전체가 보이도록 이동
-  function autofitResults() {
-    if (!map || !S.view.length) return;
-    var b = map.getBounds();
-    var vis = S.view.filter(function (s) { return b.contains([s.lat, s.lng]); }).length;
-    if (vis && vis / S.view.length >= 0.4) return;
-    var lb = L.latLngBounds(S.view.map(function (s) { return [s.lat, s.lng]; }));
-    map.flyToBounds(lb, {
-      paddingTopLeft: [26, 255], paddingBottomRight: [26, 140],
-      maxZoom: 15, duration: .55
-    });
-  }
 
   /* ---------------- bottom sheet ---------------- */
   function statusBadge(st) {
@@ -676,7 +663,7 @@
         S.area = b.getAttribute('data-area');
         syncChips();
         if (S.area !== 'all') jumpTo(S.area);
-        refresh({ autofit: S.area === 'all' });
+        refresh();
       };
     });
     document.querySelectorAll('#filterChips .chip').forEach(function (b) {
@@ -685,19 +672,19 @@
         if (f) S.filters[f] = !S.filters[f];
         if (d) S.drink = S.drink === d ? null : d;
         syncChips();
-        refresh({ autofit: true });
+        refresh();
       };
     });
     var q = document.getElementById('searchInput');
     q.oninput = function () {
       S.q = q.value.trim();
       document.getElementById('clearSearch').hidden = !S.q;
-      refresh({ autofit: true });
+      refresh();
       if (S.listOpen) renderList();
     };
     q.onkeydown = function (e) { if (e.key === 'Enter') q.blur(); };
     document.getElementById('clearSearch').onclick = function () {
-      q.value = ''; S.q = ''; document.getElementById('clearSearch').hidden = true; refresh({ autofit: true });
+      q.value = ''; S.q = ''; document.getElementById('clearSearch').hidden = true; refresh();
     };
     document.getElementById('viewToggle').onclick = function () {
       if (S.listOpen) closeList(); else openList();
