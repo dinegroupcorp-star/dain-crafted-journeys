@@ -711,7 +711,7 @@
       if (dy > 90) closeSheet();
       else sheetEl.style.transform = '';
     });
-    window.addEventListener('resize', function () { moveThumb(); });
+    window.addEventListener('resize', function () { moveThumb(); if (map) map.invalidateSize(); });
   }
 
   function initMap() {
@@ -722,12 +722,24 @@
       tap: true
     }).setView([37.555, 126.99], 12);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
-      maxZoom: 20,
-      detectRetina: true,
-      attribution: '&copy; OpenStreetMap &copy; CARTO'
+    var tileErr = 0, swapped = false;
+    var base = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      subdomains: 'abc',
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
+    // 바탕지도가 막힐 경우 Esri 거리지도로 자동 전환
+    base.on('tileerror', function () {
+      tileErr++;
+      if (tileErr >= 8 && !swapped) {
+        swapped = true;
+        map.removeLayer(base);
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+          maxZoom: 19, attribution: '&copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors'
+        }).addTo(map);
+        toast('바탕지도를 대체 소스로 전환했어요.');
+      }
+    });
 
     markersLayer = L.layerGroup().addTo(map);
     map.on('zoomend', renderPins);
@@ -748,6 +760,13 @@
       paddingTopLeft: [20, 250], paddingBottomRight: [20, 130], maxZoom: 13
     });
     window.__owhoo2 = { map: map, S: S, refresh: refresh, setMode: setMode, openSheet: openSheet, jumpTo: jumpTo };
+    // iframe/모바일에서 컨테이너 크기가 늦게 잡히는 경우를 보정
+    requestAnimationFrame(function () {
+      map.invalidateSize();
+      map.fitBounds(areaBounds('all'), {
+        paddingTopLeft: [20, 250], paddingBottomRight: [20, 130], maxZoom: 13
+      });
+    });
     setTimeout(function () { renderPins(); }, 60);
     var params = new URLSearchParams(location.search);
     var area = params.get('area');
