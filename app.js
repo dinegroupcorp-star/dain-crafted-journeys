@@ -242,8 +242,7 @@
       if (c.items.length > 1) {
         var n = c.items.length;
         var openCnt = c.items.filter(function (i) { return i.s.st.code === 'open'; }).length;
-        var html = '<div class="clusterPin' + (openCnt ? ' clusterPin--open' : '') + '">' + n +
-          '<small>' + (openCnt === n ? '모두 가능' : openCnt ? '일부 가능' : '영업 전·종료') + '</small></div>';
+        var html = '<div class="clusterPin' + (openCnt ? ' clusterPin--open' : '') + '">' + n + '</div>';
         var mk = L.marker(ll, {
           icon: L.divIcon({ className: 'pinIco', html: html, iconSize: [0, 0] }),
           zIndexOffset: 100 + n
@@ -756,16 +755,12 @@
     syncChips();
     moveThumb();
     refresh();
-    map.fitBounds(areaBounds('성수'), {
-      paddingTopLeft: [26, 262], paddingBottomRight: [26, 150], maxZoom: 16
-    });
+    map.setView([37.5448, 127.0528], 16);
     window.__owhoo2 = { map: map, S: S, refresh: refresh, setMode: setMode, openSheet: openSheet, jumpTo: jumpTo };
     // iframe/모바일에서 컨테이너 크기가 늦게 잡히는 경우를 보정
     requestAnimationFrame(function () {
       map.invalidateSize();
-      map.fitBounds(areaBounds('성수'), {
-        paddingTopLeft: [26, 262], paddingBottomRight: [26, 150], maxZoom: 16
-      });
+      map.setView([37.5448, 127.0528], 16);
     });
     setTimeout(function () { renderPins(); }, 60);
     var params = new URLSearchParams(location.search);
@@ -774,7 +769,7 @@
       S.area = area; syncChips(); refresh(); jumpTo(area);
     }
     setTimeout(function () {
-      toast('성수 35곳부터 보여드려요 · 상단 칩이나 오른쪽 버튼으로 권역 이동', 3400);
+      toast('성수 낮술골목부터 보여드려요 · 오른쪽 버튼으로 권역 이동', 3000);
     }, 900);
   }
 
