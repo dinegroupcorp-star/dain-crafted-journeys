@@ -53,7 +53,7 @@ input { font-family: inherit; }
   top: 0; left: 0; right: 0;
   z-index: 600;
   padding: calc(8px + var(--safe-top)) 12px 10px;
-  background: linear-gradient(180deg, rgba(255,247,236,.98) 0%, rgba(255,247,236,.94) 62%, rgba(255,247,236,0) 100%);
+  background: linear-gradient(180deg, rgba(255,247,236,1) 0%, rgba(255,247,236,.98) 72%, rgba(255,247,236,.86) 88%, rgba(255,247,236,0) 100%);
   pointer-events: none;
 }
 .topOverlay > * { pointer-events: auto; }
@@ -133,7 +133,7 @@ input { font-family: inherit; }
   transition: transform .22s cubic-bezier(.3,.8,.3,1), width .22s;
   width: 62px; transform: translateX(0);
 }
-.basisLabel { font-size: 10.5px; color: var(--ink-2); font-weight: 600; display: flex; align-items: center; gap: 4px; }
+.basisLabel { font-size: 10.5px; color: var(--ink-2); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .basisLabel b { color: var(--amber-deep); }
 
 /* ---------- chips ---------- */

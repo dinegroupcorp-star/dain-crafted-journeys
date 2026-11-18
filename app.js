@@ -285,7 +285,7 @@
     var base = basisDate();
     document.getElementById('basisLabel').innerHTML =
       mmdd(base) + ' (' + DAY[base.getDay()] + ') ' + hm(base.getHours() * 60 + base.getMinutes()) +
-      ' 기준' + (S.mode === 'sim' ? ' <b>시뮬레이션</b>' : '');
+      ' 기준';
     document.getElementById('listSub').textContent =
       '화면에 ' + S.view.length + '곳' + (openCnt ? ' · ' + (S.mode === 'now' ? '지금' : '2시') + ' 가능 ' + openCnt + '곳' : '');
     var nowChip = document.querySelector('[data-filter="now"]');
