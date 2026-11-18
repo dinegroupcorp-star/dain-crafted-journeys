@@ -220,18 +220,20 @@
     var pts = S.view.map(function (s) {
       return { s: s, p: map.latLngToLayerPoint(L.latLng(s.lat, s.lng)) };
     });
+    // grid clustering (no single-link chaining, so areas never bleed into each other)
+    var cells = {};
     var clusters = [];
     pts.forEach(function (it) {
-      var target = null;
-      for (var i = 0; i < clusters.length; i++) {
-        if (clusters[i].p.distanceTo(it.p) < radius) { target = clusters[i]; break; }
-      }
-      if (target) {
-        target.items.push(it);
-        target.sum = [target.sum[0] + it.p.x, target.sum[1] + it.p.y];
-        target.p = L.point(target.sum[0] / target.items.length, target.sum[1] / target.items.length);
+      var key = Math.floor(it.p.x / radius) + ':' + Math.floor(it.p.y / radius);
+      var c = cells[key];
+      if (c) {
+        c.items.push(it);
+        c.sum = [c.sum[0] + it.p.x, c.sum[1] + it.p.y];
+        c.p = L.point(c.sum[0] / c.items.length, c.sum[1] / c.items.length);
       } else {
-        clusters.push({ p: it.p, sum: [it.p.x, it.p.y], items: [it] });
+        c = { p: it.p, sum: [it.p.x, it.p.y], items: [it] };
+        cells[key] = c;
+        clusters.push(c);
       }
     });
 
@@ -745,6 +747,7 @@
     map.fitBounds(areaBounds('all'), {
       paddingTopLeft: [20, 250], paddingBottomRight: [20, 130], maxZoom: 13
     });
+    window.__owhoo2 = { map: map, S: S, refresh: refresh, setMode: setMode, openSheet: openSheet, jumpTo: jumpTo };
     setTimeout(function () { renderPins(); }, 60);
     var params = new URLSearchParams(location.search);
     var area = params.get('area');
