@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>오후 2시 · Owhoo 2 — 낮술 지도</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<meta name="theme-color" content="#FFF7EC" />
+<meta name="description" content="여유, 한가, 자유의 최고 기준은 낮술. 오후 2시에 진짜 열려 있는 낮술집 100곳을 지도에서 바로 확인하세요." />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="오후 2시" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="app">
+  <div id="mapWrap">
+    <div id="map"></div>
+
+    <div class="topOverlay">
+      <div class="brandRow">
+        <div class="brand">
+          <div class="logoMark">2</div>
+          <div class="brandText">
+            <div class="brandName">오후 2시<span class="brandDot">·</span><span class="brandEn">Owhoo 2</span></div>
+            <div class="brandSlogan">여유, 한가, 자유의 최고 기준은 낮술</div>
+          </div>
+        </div>
+        <div class="brandActions">
+          <button id="passBtn" class="iconBtn" aria-label="내 낮술 패스">
+            <span class="passIcon">🎟</span><span id="passCount" class="passCount" hidden>0</span>
+          </button>
+          <button id="infoBtn" class="iconBtn" aria-label="안내">i</button>
+        </div>
+      </div>
+
+      <div class="searchRow">
+        <div class="searchBox">
+          <svg viewBox="0 0 24 24" class="sIcon" aria-hidden="true"><path d="M11 4a7 7 0 1 0 4.2 12.6l4.1 4.1 1.4-1.4-4.1-4.1A7 7 0 0 0 11 4Zm0 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z"/></svg>
+          <input id="searchInput" type="search" inputmode="search" autocomplete="off"
+                 placeholder="매장명 · 안주 · 주종으로 찾기 (예: 파스타, 전통주)" />
+          <button id="clearSearch" class="clearBtn" aria-label="검색어 지우기" hidden>✕</button>
+        </div>
+      </div>
+
+      <div class="timeRow">
+        <div class="segmented" role="tablist" aria-label="기준 시각">
+          <button class="seg" data-mode="now" role="tab">지금 시간</button>
+          <button class="seg isActive" data-mode="sim" role="tab">오후 2시</button>
+          <span class="segThumb" aria-hidden="true"></span>
+        </div>
+        <div id="basisLabel" class="basisLabel">11/18 (수) 14:00 기준</div>
+      </div>
+
+      <div class="chips" id="areaChips">
+        <button class="chip isActive" data-area="all">전체 <b>100</b></button>
+        <button class="chip" data-area="성수">성수 <b>35</b></button>
+        <button class="chip" data-area="을지로">을지로·종로 <b>35</b></button>
+        <button class="chip" data-area="마포">마포 <b>30</b></button>
+      </div>
+      <div class="chips chipsSub" id="filterChips">
+        <button class="chip chipFilter" data-filter="now">지금 바로 가능</button>
+        <button class="chip chipFilter" data-filter="nobreak">브레이크X</button>
+        <button class="chip chipFilter" data-filter="terrace">테라스</button>
+        <span class="chipDivider" aria-hidden="true"></span>
+        <button class="chip chipFilter" data-drink="맥주">맥주</button>
+        <button class="chip chipFilter" data-drink="와인">와인</button>
+        <button class="chip chipFilter" data-drink="전통주">전통주</button>
+        <button class="chip chipFilter" data-drink="하이볼">하이볼·사케</button>
+        <button class="chip chipFilter" data-drink="칵테일">칵테일</button>
+      </div>
+    </div>
+
+    <div class="sideBtns">
+      <button class="sideBtn" id="jumpAll" aria-label="전체 보기">
+        <span class="sideIcon">⤢</span><span class="sideLabel">전체</span>
+      </button>
+      <button class="sideBtn" id="jumpSeongsu" aria-label="성수로 이동">
+        <span class="sideIcon">35</span><span class="sideLabel">성수</span>
+      </button>
+      <button class="sideBtn" id="jumpEuljiro" aria-label="을지로·종로로 이동">
+        <span class="sideIcon">35</span><span class="sideLabel">을지로</span>
+      </button>
+      <button class="sideBtn" id="jumpMapo" aria-label="마포로 이동">
+        <span class="sideIcon">30</span><span class="sideLabel">마포</span>
+      </button>
+      <button class="sideBtn sideBtnLoc" id="locBtn" aria-label="현재 위치로 이동">
+        <span class="sideIcon">◎</span><span class="sideLabel">현위치</span>
+      </button>
+    </div>
+
+    <div class="bottomRow">
+      <button id="countPill" class="countPill">
+        <span class="countDot"></span><span id="countText">낮술집 100곳</span><span class="countChev">⌃</span>
+      </button>
+      <button id="viewToggle" class="viewToggle">목록 보기</button>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <!-- list panel -->
+  <div id="listPanel" class="listPanel" aria-hidden="true">
+    <div class="listHead">
+      <div>
+        <div class="listTitle">낮술집 목록</div>
+        <div id="listSub" class="listSub">전체 100곳</div>
+      </div>
+      <button id="listClose" class="closeBtn" aria-label="닫기">✕</button>
+    </div>
+    <div id="listBody" class="listBody"></div>
+  </div>
+
+  <!-- bottom sheet -->
+  <div id="sheet" class="sheet" aria-hidden="true">
+    <div class="sheetHandleWrap" id="sheetHandle"><span class="sheetHandle"></span></div>
+    <div class="sheetBody" id="sheetBody"></div>
+  </div>
+
+  <!-- modal -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modalCard" id="modalCard"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

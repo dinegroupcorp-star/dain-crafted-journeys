@@ -1,0 +1,24 @@
+{
+  "name": "오후 2시 · Owhoo 2 — 낮술 지도",
+  "short_name": "오후 2시",
+  "description": "여유, 한가, 자유의 최고 기준은 낮술. 오후 2시에 진짜 열려 있는 낮술집 100곳을 지도에서 바로 확인하세요.",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF7EC",
+  "theme_color": "#FFF7EC",
+  "categories": ["food", "travel", "lifestyle"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "성수 낮술", "url": "./index.html?area=%EC%84%B1%EC%88%98" },
+    { "name": "을지로·종로 낮술", "url": "./index.html?area=%EC%9D%84%EC%A7%80%EB%A1%9C" },
+    { "name": "마포 낮술", "url": "./index.html?area=%EB%A7%88%ED%8F%AC" }
+  ]
+}
