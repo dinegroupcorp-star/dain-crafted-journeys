@@ -216,7 +216,7 @@
     if (!map) return;
     markersLayer.clearLayers();
     var z = map.getZoom();
-    var radius = z <= 12 ? 110 : z <= 13 ? 96 : z <= 14 ? 80 : z <= 15 ? 62 : z <= 16 ? 46 : 34;
+    var radius = z <= 12 ? 124 : z <= 13 ? 112 : z <= 14 ? 98 : z <= 15 ? 84 : z <= 16 ? 52 : 30;
     var pts = S.view.map(function (s) {
       return { s: s, p: map.latLngToLayerPoint(L.latLng(s.lat, s.lng)) };
     });
@@ -259,7 +259,7 @@
       var s = c.items[0].s;
       var sel = s.id === S.selectedId;
       var icon;
-      if (z >= 16) {
+      if (z >= 17) {
         var terr = s.terrace === 'O' ? '<span class="pinTerr">▢</span>' : '';
         icon = '<div class="pin ' + pinClass(s.st.code) + (sel ? ' pin--sel isSel' : '') + '">' +
           '<span class="dot"></span><span class="pinTxt">' + esc(shortLabel(s)) + '</span>' + terr + '</div>';
