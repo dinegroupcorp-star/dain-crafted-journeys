@@ -371,8 +371,8 @@
   function autofitResults() {
     if (!map || !S.view.length) return;
     var b = map.getBounds();
-    var onScreen = S.view.some(function (s) { return b.contains([s.lat, s.lng]); });
-    if (onScreen) return;
+    var vis = S.view.filter(function (s) { return b.contains([s.lat, s.lng]); }).length;
+    if (vis && vis / S.view.length >= 0.4) return;
     var lb = L.latLngBounds(S.view.map(function (s) { return [s.lat, s.lng]; }));
     map.flyToBounds(lb, {
       paddingTopLeft: [26, 255], paddingBottomRight: [26, 140],
