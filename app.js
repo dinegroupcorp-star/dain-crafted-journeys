@@ -430,14 +430,15 @@
       '<div class="pointBox"><div class="pointLabel">낮술 추천 포인트</div>' +
       '<div class="pointText">' + esc(s.point) + '</div></div>' +
 
-      (pass ? '<div class="passBadge">🎟 낮술 패스 발급됨 · <b>' + esc(pass.code) + '</b></div>' : '') +
-
+      '<div class="ctaDock">' +
       '<div class="ctaRow">' +
       '<button class="cta ctaPrimary" id="getPass">' + (pass ? '패스 다시 보기' : '낮술 패스 받기') + '</button>' +
       '<a class="cta ctaSecondary" href="' + esc(s.naver) + '" target="_blank" rel="noopener">네이버 지도</a>' +
       third +
       '</div>' +
-      '<div class="ctaNote">낮술 패스는 제휴 매장에서 1잔 할인·안주 서비스로 쓰이는 웰컴 쿠폰입니다.<br>프로토타입 데모 — 실제 결제에는 사용되지 않습니다.</div>';
+      (pass ? '<div class="passBadge">🎟 낮술 패스 발급됨 · <b>' + esc(pass.code) + '</b></div>' : '') +
+      '<div class="ctaNote">낮술 패스는 제휴 매장 1잔 할인·안주 서비스로 쓰이는 웰컴 쿠폰입니다 · 프로토타입 데모</div>' +
+      '</div>';
 
     document.getElementById('sheetClose').onclick = closeSheet;
     document.getElementById('getPass').onclick = function () { openPassModal(s); };
@@ -492,7 +493,7 @@
       '<ul class="couponTerms">' +
       '<li>· 사용 시간: 오늘 14:00 ~ 17:00 (낮술 타임)</li>' +
       '<li>· 1인 1매 · 다른 쿠폰과 중복 사용 불가</li>' +
-      '<li>· 프로토타입 데모 쿠폰으로 실제 매장에서 사용할 수 없습니다</li>' +
+      '<li>· 데모용 쿠폰입니다 (실제 사용 불가)</li>' +
       '</ul>' +
       '<div class="couponActions">' +
       (exist
