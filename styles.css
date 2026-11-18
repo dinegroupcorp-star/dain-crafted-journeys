@@ -106,6 +106,8 @@ input { font-family: inherit; }
   font-size: 13.5px; color: var(--ink);
 }
 .searchBox input::placeholder { color: #B3ABA1; font-size: 12.5px; }
+.searchBox input::-webkit-search-cancel-button,
+.searchBox input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
 .clearBtn {
   width: 20px; height: 20px; border-radius: 50%; background: #EDE6DA;
   color: var(--ink-2); font-size: 10px; line-height: 20px; text-align: center; flex: none;
