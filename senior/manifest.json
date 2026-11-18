@@ -1,0 +1,16 @@
+{
+  "name": "이음선배 — 세대가 만나 지혜가 이어지는 곳",
+  "short_name": "이음선배",
+  "description": "은퇴 어르신의 경험이 아이들의 지혜로 이어지는 화상+동네 거점 하이브리드 시니어 멘토링.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF7F2",
+  "theme_color": "#1E4D3B",
+  "lang": "ko",
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

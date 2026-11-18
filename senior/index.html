@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>이음선배 · 세대가 만나 지혜가 이어지는 곳</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<meta name="theme-color" content="#1E4D3B" />
+<meta name="description" content="은퇴 어르신의 경험이 아이들의 지혜로 이어지는 곳. 화상 1:1 멘토링과 동네 거점 세대교류를 한 앱에서." />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="이음선배" />
+<link rel="manifest" href="./manifest.json" />
+<link rel="icon" href="./icons/icon-192.png" />
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="./styles.css?v=1" />
+</head>
+<body>
+<div class="frame" id="frame">
+
+  <header class="appHeader">
+    <div class="brandRow">
+      <div class="logoMark" aria-hidden="true">
+        <span class="logoTop">이음</span><span class="logoBottom">先</span>
+      </div>
+      <div class="brandText">
+        <div class="brandName">이음선배</div>
+        <div class="brandSlogan">세대가 만나 지혜가 이어지는 곳</div>
+      </div>
+      <button id="myBtn" class="myBtn" aria-label="내 신청 내역">
+        <span class="myIcon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M7 3h10a2 2 0 0 1 2 2v16l-7-3.2L5 21V5a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="myLabel">내 신청</span>
+        <span class="myCount" id="myCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="views" class="views">
+
+    <!-- ============ 1. 멘토 찾기 ============ -->
+    <section class="view isActive" id="view-home" data-tab="home">
+      <div class="homeHead">
+        <h1 class="pageTitle">오늘, 어떤 선배를<br/>만나 볼까요?</h1>
+        <p class="pageSub">신원·범죄경력 검증을 마친 선배 12명이 기다리고 있어요.</p>
+
+        <div class="searchBox">
+          <svg class="sIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4a7 7 0 1 0 4.2 12.6l4.1 4.1 1.4-1.4-4.1-4.1A7 7 0 0 0 11 4Zm0 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z" fill="currentColor"/></svg>
+          <input id="searchInput" type="search" inputmode="search" autocomplete="off"
+                 placeholder="이름·분야로 찾기 (예: 목수, 바둑)" aria-label="멘토 검색" />
+          <button id="clearSearch" class="clearBtn" aria-label="검색어 지우기" hidden>✕</button>
+        </div>
+
+        <div class="chipRow" id="catChips" role="group" aria-label="분야">
+          <button class="chip isActive" data-cat="all">전체</button>
+          <button class="chip" data-cat="인생·진로">인생·진로</button>
+          <button class="chip" data-cat="독서·글쓰기">독서·글쓰기</button>
+          <button class="chip" data-cat="손재주·공예">손재주·공예</button>
+          <button class="chip" data-cat="바둑·체스">바둑·체스</button>
+          <button class="chip" data-cat="역사·외국어">역사·외국어</button>
+        </div>
+
+        <div class="segmented" id="modeSeg" role="tablist" aria-label="만남 방식">
+          <button class="seg isActive" data-mode="all" role="tab">전체</button>
+          <button class="seg" data-mode="화상" role="tab">화상 1:1</button>
+          <button class="seg" data-mode="거점" role="tab">동네 거점</button>
+        </div>
+      </div>
+
+      <div class="listHead">
+        <span id="resultLabel">선배 12명</span>
+        <span class="listHint">카드를 눌러 첫 만남을 신청하세요</span>
+      </div>
+
+      <div id="mentorList" class="mentorList"></div>
+      <div id="mentorEmpty" class="emptyState" hidden>
+        <div class="emptyEmoji" aria-hidden="true">🍃</div>
+        <p class="emptyTitle">조건에 맞는 선배가 없어요</p>
+        <p class="emptySub">분야나 방식을 바꿔 다시 찾아보세요.</p>
+        <button class="ghostBtn" id="resetFilter">필터 초기화</button>
+      </div>
+      <div class="safeNote">
+        <span class="safeDot" aria-hidden="true">✓</span>
+        모든 선배는 <b>본인인증 · 범죄경력조회 · 아동교육 이수</b> 3단계 검증을 통과했습니다.
+      </div>
+    </section>
+
+    <!-- ============ 2. 동네 거점 ============ -->
+    <section class="view" id="view-map" data-tab="map">
+      <div class="mapHead">
+        <h1 class="pageTitle small">동네에서 만나는 선배</h1>
+        <p class="pageSub">수도권 8개 거점에서 매주 세대교류 프로그램이 열려요.</p>
+      </div>
+
+      <div class="mapWrap">
+        <div id="map" class="map"></div>
+        <div class="mapTag" id="mapTag">거점 8곳</div>
+        <button class="mapLocate" id="locateBtn" aria-label="수도권 전체 보기">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3m0 12v3M3 12h3m12 0h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        </button>
+      </div>
+
+      <div class="venueSectionHead">
+        <span>이번 주 프로그램</span>
+        <span class="venueCount" id="venueCount">8곳</span>
+      </div>
+      <div id="venueList" class="venueList"></div>
+      <div class="mapFootnote">지도 데이터 © OpenStreetMap contributors</div>
+    </section>
+
+    <!-- ============ 3. 화상·안전실 ============ -->
+    <section class="view" id="view-safety" data-tab="safety">
+      <div class="safetyHead">
+        <h1 class="pageTitle small">화상·안전실</h1>
+        <p class="pageSub">부모님이 안심하고 맡길 수 있도록, 대화와 신원을 함께 지킵니다.</p>
+      </div>
+
+      <div class="liveCard">
+        <div class="liveTop">
+          <span class="liveBadge"><span class="liveDot" aria-hidden="true"></span>AI 대화 안전 모니터링 작동 중</span>
+          <span class="liveTime" id="liveTime">오늘 16:00</span>
+        </div>
+        <div class="liveSession">
+          <div class="liveAvatar">김</div>
+          <div class="liveMeta">
+            <div class="liveName">김정호 선배 <span>· 수석 멘토</span></div>
+            <div class="liveSub">지호(초5)와의 3번째 만남 · 42분 진행</div>
+          </div>
+          <span class="liveRec" aria-hidden="true">REC</span>
+        </div>
+        <div class="liveFlags">
+          <span class="flag ok">✓ 신원 일치</span>
+          <span class="flag ok">✓ 위험 발언 없음</span>
+          <span class="flag ok">✓ 개인정보 요구 없음</span>
+        </div>
+      </div>
+
+      <div class="talkCard">
+        <div class="talkHead">
+          <span class="talkLabel">오늘의 세대 공감 대화</span>
+          <span class="talkStep" id="talkStep">1 / 4</span>
+        </div>
+        <div class="talkBody">
+          <p class="talkQ" id="talkQ">“선배님은 열두 살 때, 학교 끝나고 무엇을 하며 놀았어요?”</p>
+          <p class="talkHint" id="talkHint">아이들이 먼저 물어보는 질문이에요. 선배님은 그때의 사진 한 장을 함께 보여 주세요.</p>
+        </div>
+        <div class="talkDots" id="talkDots" aria-hidden="true"></div>
+        <button class="primaryBtn talkBtn" id="nextTalk">다음 질문 넘기기</button>
+      </div>
+
+      <div class="panel">
+        <div class="panelHead"><span>3단계 신원·안전 검증</span><span class="panelBadge">완료</span></div>
+        <ol class="timeline">
+          <li class="done">
+            <span class="tlDot" aria-hidden="true">✓</span>
+            <div class="tlBody"><div class="tlTitle">본인인증</div><div class="tlSub">휴대폰 본인확인 · 주민등록 진위 확인</div></div>
+            <span class="tlDate">09.12</span>
+          </li>
+          <li class="done">
+            <span class="tlDot" aria-hidden="true">✓</span>
+            <div class="tlBody"><div class="tlTitle">범죄경력 조회</div><div class="tlSub">성범죄·아동학대 경력 조회 (6개월마다 갱신)</div></div>
+            <span class="tlDate">09.18</span>
+          </li>
+          <li class="done">
+            <span class="tlDot" aria-hidden="true">✓</span>
+            <div class="tlBody"><div class="tlTitle">아동 이해 교육 이수</div><div class="tlSub">4시간 온라인 교육 · 경계 지키기 서약</div></div>
+            <span class="tlDate">09.25</span>
+          </li>
+        </ol>
+        <div class="panelNote">검증 정보는 마지막 갱신일로부터 <b>6개월</b>마다 다시 확인합니다.</div>
+      </div>
+
+      <div class="panel">
+        <div class="panelHead"><span>주간 멘토링 리포트</span><span class="panelBadge soft">샘플</span></div>
+        <div class="reportMeta">11월 3주차 · 지호(초5) · 김정호 선배</div>
+        <div class="reportGrid">
+          <div class="reportCell"><span class="rcNum">2</span><span class="rcLabel">만남</span></div>
+          <div class="reportCell"><span class="rcNum">84<span class="rcUnit">분</span></span><span class="rcLabel">대화 시간</span></div>
+          <div class="reportCell"><span class="rcNum">6</span><span class="rcLabel">나눈 이야기</span></div>
+        </div>
+        <ul class="reportList">
+          <li><b>이번 주 주제</b> · 1970년대 시골 학교의 하루</li>
+          <li><b>아이의 변화</b> · “옛날 이야기”를 스스로 찾아 읽기 시작했어요</li>
+          <li><b>다음 만남</b> · 할아버지의 첫 직장 이야기 + 편지 쓰기</li>
+        </ul>
+        <div class="reportFoot">안전 모니터링이 위험 신호를 감지하면 <b>10분 안에</b> 보호자에게 알림이 갑니다.</div>
+      </div>
+    </section>
+
+    <!-- ============ 4. 시니어 지원 ============ -->
+    <section class="view" id="view-senior" data-tab="senior">
+      <div class="seniorHead">
+        <h1 class="pageTitle small">경력은 은퇴하지 않습니다</h1>
+        <p class="pageSub">선배의 경험이 아이들의 지혜가 되는, 평생 직업군.</p>
+      </div>
+
+      <div class="ladder">
+        <div class="ladderCard isActive" data-ladder="junior">
+          <div class="lcTop"><span class="lcStep">1단계</span><span class="lcGrade gradeJunior">주니어 멘토</span></div>
+          <div class="lcPay">시급 <b>22,000원</b> · 월 2~4회</div>
+          <p class="lcShort">거점 프로그램 보조부터 시작하는 첫 단계</p>
+          <p class="lcDesc">교육 이수 후 거점 프로그램 보조로 시작합니다. 첫 3개월은 선배 멘토와 짝을 이뤄 진행해요.</p>
+          <ul class="lcList">
+            <li>거점 프로그램 보조 · 1:1 화상 멘토링</li>
+            <li>승급 조건 · 3개월 · 만족도 4.5 이상</li>
+          </ul>
+        </div>
+        <div class="ladderCard" data-ladder="pro">
+          <div class="lcTop"><span class="lcStep">2단계</span><span class="lcGrade gradePro">전문 멘토</span></div>
+          <div class="lcPay">시급 <b>28,000원</b> · 월 4~8회</div>
+          <p class="lcShort">내 분야 프로그램을 직접 기획하고 진행</p>
+          <p class="lcDesc">자기 분야 프로그램을 직접 기획하고 진행합니다. 학부모 구독 매칭이 우선 배정됩니다.</p>
+          <ul class="lcList">
+            <li>1:1 화상 · 거점 프로그램 단독 진행</li>
+            <li>승급 조건 · 30회 진행 · 학부모 재신청 60% 이상</li>
+          </ul>
+        </div>
+        <div class="ladderCard" data-ladder="senior">
+          <div class="lcTop"><span class="lcStep">3단계</span><span class="lcGrade gradeSenior">수석 멘토</span></div>
+          <div class="lcPay">시급 <b>35,000원</b> · 월 6~12회</div>
+          <p class="lcShort">새 선배를 가르치고 거점을 운영</p>
+          <p class="lcDesc">새 선배를 교육하고 지역 거점의 운영을 맡습니다. 지자체·늘봄학교 프로그램 강사로도 연결됩니다.</p>
+          <ul class="lcList">
+            <li>신규 멘토 교육 · 거점 운영 · 기관 강의</li>
+            <li>유지 조건 · 연 2회 안전교육 · 반기 평가</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel simPanel">
+        <div class="panelHead"><span>월 예상 활동비 시뮬레이터</span><span class="panelBadge soft">세전</span></div>
+        <div class="simGrade" id="simGradeRow" role="group" aria-label="직무 등급">
+          <button class="simGBtn isActive" data-grade="junior">주니어</button>
+          <button class="simGBtn" data-grade="pro">전문</button>
+          <button class="simGBtn" data-grade="senior">수석</button>
+        </div>
+        <div class="simSliderRow">
+          <label class="simLabel" for="hourRange">주당 활동 시간</label>
+          <span class="simHour" id="simHourLabel">6시간</span>
+        </div>
+        <input type="range" id="hourRange" min="2" max="20" step="1" value="6" aria-label="주당 활동 시간" />
+        <div class="simTicks" aria-hidden="true"><span>2시간</span><span>11시간</span><span>20시간</span></div>
+        <div class="simQuick">
+          <button class="quickChip" data-hours="3">주 3시간</button>
+          <button class="quickChip" data-hours="6">주 6시간</button>
+          <button class="quickChip" data-hours="10">주 10시간</button>
+          <button class="quickChip" data-hours="15">주 15시간</button>
+        </div>
+        <div class="simResult">
+          <div class="simTotalLabel">월 예상 활동비</div>
+          <div class="simTotal"><span id="simTotal">731,000</span><span class="won">원</span></div>
+          <div class="simBreak" id="simBreak">주 6시간 × 4.3주 × 28,000원</div>
+        </div>
+        <div class="simAlt">
+          <div class="simAltRow"><span>지자체 노인일자리 연계 시</span><b id="simB2G">+ 월 290,000원</b></div>
+          <div class="simAltRow"><span>학부모 구독 매칭 보너스</span><b id="simBonus">+ 회당 5,000원</b></div>
+        </div>
+        <p class="simNote" id="simNote">지자체 연계는 공고·정원에 따라 달라지며, 본 시뮬레이터는 참고용 추정치입니다.</p>
+      </div>
+
+      <div class="panel formPanel">
+        <div class="panelHead"><span>시니어 멘토 지원하기</span></div>
+        <p class="formIntro">지금 하는 일, 살아온 이야기 어느 것이든 아이들에게는 지혜가 됩니다.</p>
+        <form id="applyForm" novalidate>
+          <label class="field">
+            <span class="fLabel">이름</span>
+            <input type="text" id="fName" name="name" placeholder="예: 김정호" autocomplete="name" required />
+          </label>
+          <label class="field">
+            <span class="fLabel">전문 분야</span>
+            <select id="fField" name="field" required>
+              <option value="">선택해 주세요</option>
+              <option>인생·진로</option>
+              <option>독서·글쓰기</option>
+              <option>손재주·공예</option>
+              <option>바둑·체스</option>
+              <option>역사·외국어</option>
+              <option>그 밖의 분야</option>
+            </select>
+          </label>
+          <div class="field">
+            <span class="fLabel">희망 방식</span>
+            <div class="radioRow" id="fModeRow">
+              <label class="radioChip"><input type="radio" name="mode" value="화상 1:1" checked /><span>화상 1:1</span></label>
+              <label class="radioChip"><input type="radio" name="mode" value="동네 거점" /><span>동네 거점</span></label>
+              <label class="radioChip"><input type="radio" name="mode" value="둘 다" /><span>둘 다</span></label>
+            </div>
+          </div>
+          <label class="field">
+            <span class="fLabel">한 줄 소개 <em>(선택)</em></span>
+            <input type="text" id="fIntro" name="intro" placeholder="예: 35년간 아이들을 가르쳤습니다" />
+          </label>
+          <p class="formErr" id="formErr" hidden></p>
+          <button type="submit" class="primaryBtn wide">지원서 보내기</button>
+          <p class="formFoot">접수 후 3일 안에 이음선배 담당 선생님이 전화로 안내드립니다.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="주요 메뉴">
+    <button class="tab isActive" data-tab="home" aria-current="page">
+      <span class="tabIcon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><circle cx="9.5" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 19c0-3.1 2.7-5.3 6-5.3s6 2.2 6 5.3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16.2 5.4a3 3 0 0 1 0 5.6M17.5 13.9c2 .6 3.4 2.3 3.4 4.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      </span>
+      <span class="tabLabel">멘토 찾기</span>
+    </button>
+    <button class="tab" data-tab="map">
+      <span class="tabIcon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 21s6.5-6.1 6.5-11a6.5 6.5 0 1 0-13 0C5.5 14.9 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.4" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+      </span>
+      <span class="tabLabel">동네 거점</span>
+    </button>
+    <button class="tab" data-tab="safety">
+      <span class="tabIcon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 3.2 5 6v5.5c0 4.2 2.9 7.6 7 9.3 4.1-1.7 7-5.1 7-9.3V6l-7-2.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m9 12 2.2 2.2L15.4 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="tabLabel">화상·안전실</span>
+    </button>
+    <button class="tab" data-tab="senior">
+      <span class="tabIcon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V9m4 11V9m4 11V9m4 11V9M3.5 9h17L12 3.5 3.5 9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="tabLabel">시니어 지원</span>
+    </button>
+  </nav>
+
+  <!-- mentor / venue detail bottom sheet -->
+  <div id="sheet" class="sheet" aria-hidden="true">
+    <div class="sheetHandleWrap" id="sheetHandle"><span class="sheetHandle"></span></div>
+    <div class="sheetBody" id="sheetBody"></div>
+  </div>
+  <div id="scrim" class="scrim" hidden></div>
+
+  <!-- modal -->
+  <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modalCard" id="modalCard"></div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="./data.js?v=1"></script>
+<script src="./app.js?v=1"></script>
+</body>
+</html>
