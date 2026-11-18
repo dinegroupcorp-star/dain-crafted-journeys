@@ -437,7 +437,7 @@
       third +
       '</div>' +
       (pass ? '<div class="passBadge">🎟 낮술 패스 발급됨 · <b>' + esc(pass.code) + '</b></div>' : '') +
-      '<div class="ctaNote">낮술 패스는 제휴 매장 1잔 할인·안주 서비스로 쓰이는 웰컴 쿠폰입니다 · 프로토타입 데모</div>' +
+      '<div class="ctaNote">제휴 매장 1잔 할인·안주 서비스 쿠폰 · 프로토타입 데모</div>' +
       '</div>';
 
     document.getElementById('sheetClose').onclick = closeSheet;

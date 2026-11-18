@@ -1,5 +1,5 @@
 /* Owhoo 2 — 최소 서비스워커: 항상 네트워크 우선, 오프라인일 때만 캐시 */
-var CACHE = 'owhoo2-v13';
+var CACHE = 'owhoo2-v14';
 var ASSETS = ['./', './index.html', './styles.css', './app.js', './data/stores.json', './data/stores.js', './icons/favicon-32.png', './icons/apple-touch-icon.png',
   './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 
